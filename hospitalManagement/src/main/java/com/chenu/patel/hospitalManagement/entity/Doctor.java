@@ -25,9 +25,9 @@ public class Doctor {
     @Column(length = 100, nullable = false, unique = true)
     private String email;
 
-    @ManyToMany(mappedBy = "doctors")
+    @ManyToMany(mappedBy = "doctors",fetch = FetchType.LAZY)
     private Set<Department>departments = new HashSet<>();
 
-    @OneToMany(mappedBy="doctor")
+    @OneToMany(mappedBy="doctor",fetch = FetchType.LAZY)
     private List<Appointment> appointments = new ArrayList<>();
 }

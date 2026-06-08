@@ -1,8 +1,6 @@
 package com.chenu.patel.hospitalManagement;
 
-import com.chenu.patel.hospitalManagement.dto.ResponseBloodGroupCountEntity;
 import com.chenu.patel.hospitalManagement.entity.Patient;
-import com.chenu.patel.hospitalManagement.entity.type.BloodGroup;
 import com.chenu.patel.hospitalManagement.repository.PatientRepository;
 import com.chenu.patel.hospitalManagement.service.PatientService;
 import org.junit.jupiter.api.Test;
@@ -11,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @SpringBootTest
 class HospitalManagementApplicationTests {
