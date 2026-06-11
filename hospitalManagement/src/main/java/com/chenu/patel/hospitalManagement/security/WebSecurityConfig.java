@@ -1,5 +1,6 @@
 package com.chenu.patel.hospitalManagement.security;
 
+import com.chenu.patel.hospitalManagement.entity.type.PermissionType;
 import com.chenu.patel.hospitalManagement.entity.type.RoleType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,11 +23,13 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
+import static com.chenu.patel.hospitalManagement.entity.type.PermissionType.*;
 import static com.chenu.patel.hospitalManagement.entity.type.RoleType.*;
 
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -39,6 +44,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/public/**","/auth/**").permitAll()
                         .requestMatchers("/admin/**").hasRole(ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,"/admin/**").hasAnyAuthority(APPOINTMENT_DELETE.name(),
+                                PATIENT_READ.name())
                         .requestMatchers("/doctors/**").hasAnyRole(DOCTOR.name(), ADMIN.name())
                                 .anyRequest().authenticated()
                 )

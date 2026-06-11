@@ -9,9 +9,12 @@ import com.chenu.patel.hospitalManagement.repository.AppointmentRepository;
 import com.chenu.patel.hospitalManagement.repository.DoctorRepository;
 import com.chenu.patel.hospitalManagement.repository.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PrePersist;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,6 +31,7 @@ public class AppointmentService {
     private final ModelMapper modelMapper;
 
     @Transactional
+    @Secured("ROLE_PATIENT")
     public AppointmentResponseDto createNewAppointment(CreateAppointmentRequestDto appointment) {
         Long doctorId = appointment.getDoctorId();
         Long patientId = appointment.getPatientId();
@@ -47,6 +51,7 @@ public class AppointmentService {
     }
 
     @Transactional
+    @PreAuthorize("hasAuthority('appointment:write') OR #DoctorId == authentication.principal.getId() ") // called spel expression
     public Appointment reAssignmentAppointment(Long doctorId, Long appointmentId) {
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow();
         Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow();
@@ -60,7 +65,8 @@ public class AppointmentService {
 
 
     @Transactional
-    public List<AppointmentResponseDto> getAllAppointmentsOfDoctor(Long DoctorId){
+    @PreAuthorize("hashRole('ADMIN') OR hashRole('DOCTOR') AND #DoctorId == authentication.principal.getId() ") // called spel expression
+     public List<AppointmentResponseDto> getAllAppointmentsOfDoctor(Long DoctorId){
         Doctor doctor = doctorRepository.findById(DoctorId).orElseThrow(()->new EntityNotFoundException("Doctor not found with id " + DoctorId));
           return doctor.getAppointments()
                 .stream()
