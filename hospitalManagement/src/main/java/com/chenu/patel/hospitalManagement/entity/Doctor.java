@@ -22,7 +22,12 @@ public class Doctor {
     private String name;
     @Column(length = 50)
     private String specialization;
-    @Column(length = 100, nullable = false, unique = true)
+
+    @OneToOne
+    @MapsId
+    private User user;
+
+    @Column(length = 100, nullable = true, unique = true)
     private String email;
 
     @ManyToMany(mappedBy = "doctors",fetch = FetchType.LAZY)

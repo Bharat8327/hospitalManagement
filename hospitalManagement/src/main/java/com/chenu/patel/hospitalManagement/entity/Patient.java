@@ -2,8 +2,7 @@ package com.chenu.patel.hospitalManagement.entity;
 
 import com.chenu.patel.hospitalManagement.entity.type.BloodGroup;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -17,7 +16,9 @@ import java.util.List;
 @Table(name = "patient", uniqueConstraints = {@UniqueConstraint(name = "uk_patient_name",columnNames = {"name"})},
         indexes = {@Index(name = "index_patient_birthDate",columnList = "birthDate" )}
 )
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Patient {
 
     @Id
@@ -31,6 +32,11 @@ public class Patient {
 
     @Column(unique = true, nullable = false)
     private String email;
+
+
+    @OneToOne
+    @MapsId
+    private User user ;
 
     @ToString.Exclude
     private LocalDate birthDate;

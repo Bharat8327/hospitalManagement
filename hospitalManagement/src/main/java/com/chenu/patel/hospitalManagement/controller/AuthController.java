@@ -3,6 +3,7 @@ package com.chenu.patel.hospitalManagement.controller;
 import com.chenu.patel.hospitalManagement.dto.LoginRequestDto;
 import com.chenu.patel.hospitalManagement.dto.LoginResponseDto;
 import com.chenu.patel.hospitalManagement.dto.SignupRequestDto;
+import com.chenu.patel.hospitalManagement.entity.type.AuthProviderType;
 import com.chenu.patel.hospitalManagement.security.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,12 @@ public class AuthController
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) throws Exception {
         return ResponseEntity.ok(authService.login(loginRequestDto));
     }
     @PostMapping("/signup")
     public ResponseEntity<String> signup( @RequestBody SignupRequestDto request) {
-        authService.signup(request);
+        authService.signup(request, AuthProviderType.EMAIL,null);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("User created successfully");
     }
